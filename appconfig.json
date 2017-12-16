@@ -1,0 +1,11 @@
+{
+  "listen": ":8090",
+  "log": "",
+  "target": "tcp://192.168.56.101:2376",
+  "apiversion": "1.32",
+  "db": {
+    "address": "localhost:5432",
+    "auth": "postgres",
+    "dbname": "ddb"
+  }
+}
