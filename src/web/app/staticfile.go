@@ -4,17 +4,44 @@ author Vyacheslav Kryuchenko
 package app
 
 import (
+	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"web"
 )
 
-func staticFile(writer http.ResponseWriter, request *http.Request) {
+func serveFile(resourceName string) ([]byte, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	resourcePath := filepath.FromSlash(filepath.Join(wd, "src", "web", "resources", resourceName))
+	file, err := os.Open(resourcePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	return ioutil.ReadAll(file)
+}
+
+func serveAsset(resourceName string) ([]byte, error) {
+	return web.Asset(resourceName)
+}
+
+func (p *Provider) staticFile(writer http.ResponseWriter, request *http.Request) {
+	var content []byte
+	var serveErr error
 	mimeType := "text/plain; charset=utf-8"
 	resourceName := request.URL.Path[1:]
-	content, err := web.Asset(resourceName)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusNotFound)
+	if !p.Develop {
+		content, serveErr = serveAsset(resourceName)
+	} else {
+		content, serveErr = serveFile(resourceName)
+	}
+	if serveErr != nil {
+		http.Error(writer, serveErr.Error(), http.StatusNotFound)
 		return
 	}
 	split := strings.Split(resourceName, ".")

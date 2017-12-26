@@ -1,4 +1,5 @@
 {
+  "develop": true,
   "listen": ":8090",
   "log": "",
   "appname": "dev-db.vrn.mail.msk",

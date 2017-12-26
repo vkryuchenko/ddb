@@ -1,3 +1,3 @@
 function test() {
-    alert("tram-pam-pam")
+    alert("tram-pam-pam!!!")
 }

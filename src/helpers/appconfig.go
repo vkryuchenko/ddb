@@ -10,6 +10,7 @@ import (
 )
 
 type AppConfig struct {
+	Develop    bool           `json:"develop"`
 	Listen     string         `json:"listen"`
 	Log        string         `json:"log"`
 	Appname    string         `json:"appname"`

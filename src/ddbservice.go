@@ -19,6 +19,7 @@ func main() {
 	appConfig := helpers.AppConfig{}
 	appConfig.Read(configPath)
 	provider := app.Provider{
+		Develop:         appConfig.Develop,
 		Listen:          appConfig.Listen,
 		ApplicationName: appConfig.Appname,
 		Secret:          appConfig.Secret,
