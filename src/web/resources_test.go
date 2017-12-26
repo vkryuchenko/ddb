@@ -17,6 +17,9 @@ func TestAssetsLen(t *testing.T) {
 
 func TestAssetNames(t *testing.T) {
 	sources := []string{
+		"header.tmpl",
+		"footer.tmpl",
+		"auth.tmpl",
 		"main.tmpl",
 		"static/css/bootstrap.min.css",
 		"static/css/bootstrap-theme.min.css",

@@ -18,6 +18,10 @@ var (
 func main() {
 	appConfig := helpers.AppConfig{}
 	appConfig.Read(configPath)
-	provider := app.Provider{Listen: appConfig.Listen}
+	provider := app.Provider{
+		Listen:          appConfig.Listen,
+		ApplicationName: appConfig.Appname,
+		Secret:          appConfig.Secret,
+	}
 	app.StartServer(&provider)
 }

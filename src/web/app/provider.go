@@ -14,9 +14,11 @@ import (
 )
 
 type Provider struct {
-	Listen    string
-	instance  *goji.Mux
-	templates *template.Template
+	Listen          string
+	ApplicationName string
+	Secret          string
+	instance        *goji.Mux
+	templates       *template.Template
 }
 
 func (p *Provider) initTemplates() {
@@ -39,8 +41,9 @@ func (p *Provider) initTemplates() {
 func (p *Provider) init() {
 	mux := goji.NewMux()
 	// list of handlers
-	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	mux.HandleFunc(pat.Get("/static/*"), staticFile)
+	mux.HandleFunc(pat.Get("/"), p.mainPage)
+	mux.HandleFunc(pat.Get("/auth"), p.authPage)
 	// end list of handlers
 	p.instance = mux
 }

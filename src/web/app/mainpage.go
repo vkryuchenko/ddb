@@ -8,7 +8,12 @@ import (
 	"net/http"
 )
 
-func (p *Provider) mainPage(writer http.ResponseWriter, _ *http.Request) {
+func (p *Provider) mainPage(writer http.ResponseWriter, request *http.Request) {
+	_, err := request.Cookie(p.ApplicationName)
+	if err != nil {
+		http.Redirect(writer, request, "/auth", http.StatusFound)
+		return
+	}
 	mainPage(writer, p.templates)
 }
 
