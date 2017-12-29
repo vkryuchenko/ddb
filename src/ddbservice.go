@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 	"helpers"
+	"log"
 	"web/app"
 )
 
@@ -18,6 +19,10 @@ var (
 func main() {
 	appConfig := helpers.AppConfig{}
 	appConfig.Read(configPath)
+	err := appConfig.DB.InitDatabase()
+	if err != nil {
+		log.Panic(err)
+	}
 	provider := app.Provider{
 		Develop:         appConfig.Develop,
 		Listen:          appConfig.Listen,
