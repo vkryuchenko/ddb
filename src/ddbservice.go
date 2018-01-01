@@ -23,11 +23,16 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	ldapClient, err := appConfig.LDAP.Init()
+	if err != nil {
+		log.Panic(err)
+	}
 	provider := app.Provider{
 		Develop:         appConfig.Develop,
 		Listen:          appConfig.Listen,
 		ApplicationName: appConfig.Appname,
 		Secret:          appConfig.Secret,
+		LDAPClient:      &ldapClient,
 	}
 	app.StartServer(&provider)
 }

@@ -6,6 +6,7 @@ package app
 import (
 	"goji.io"
 	"goji.io/pat"
+	"helpers"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ type Provider struct {
 	ApplicationName string
 	Secret          string
 	Develop         bool
+	LDAPClient      *helpers.LDAPClient
 	instance        *goji.Mux
 	templates       *template.Template
 }

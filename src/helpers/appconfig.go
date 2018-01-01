@@ -19,6 +19,7 @@ type AppConfig struct {
 	Apiversion string         `json:"apiversion"`
 	Ports      string         `json:"ports"`
 	DB         PostgresConfig `json:"db"`
+	LDAP       LdapConfig     `json:"ldap"`
 }
 
 func (ac *AppConfig) Read(configPath string) {

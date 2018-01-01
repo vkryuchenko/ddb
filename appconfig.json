@@ -12,5 +12,19 @@
     "address": "localhost:15432",
     "auth": "postgres",
     "dbname": "ddb"
+  },
+  "ldap": {
+    "address":"ldap.forumsys.com:389",
+    "base":"dc=example,dc=com",
+    "bind_dn":"cn=read-only-admin,dc=example,dc=com",
+    "bind_password":"password",
+    "user_filter":"(uid=%s)",
+    "group_filter":"",
+    "ssl": {
+      "use_ssl": false,
+      "skip_tls": true,
+      "skip_verify": true,
+      "server_name":"ldap.forumsys.com"
+    }
   }
 }
