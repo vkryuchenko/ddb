@@ -51,6 +51,12 @@ func (p *Provider) staticFile(writer http.ResponseWriter, request *http.Request)
 		mimeType = "text/css; charset=utf-8"
 	case "js":
 		mimeType = "text/javascript; charset=utf-8"
+	case "svg":
+		mimeType = "image/svg+xml; charset=utf-8"
+	case "woff":
+		mimeType = "application/font-woff; charset=utf-8"
+	case "woff2":
+		mimeType = "application/font-woff2; charset=utf-8"
 	default:
 		http.Error(writer, "invalid type", http.StatusBadRequest)
 		return

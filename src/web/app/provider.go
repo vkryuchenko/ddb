@@ -17,6 +17,7 @@ type Provider struct {
 	ApplicationName string
 	Secret          string
 	Develop         bool
+	Docker          *helpers.DockerConfig
 	LDAPClient      *helpers.LDAPClient
 	EmailClient     *helpers.EmailClient
 	instance        *goji.Mux
@@ -25,10 +26,13 @@ type Provider struct {
 
 func (p *Provider) init() {
 	mux := goji.NewMux()
+	// cookie middleware
+	//mux.Use(p.cookieMiddleware)
 	// list of handlers
 	mux.HandleFunc(pat.Get("/static/*"), p.staticFile)
-	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	mux.HandleFunc(pat.Get("/auth"), p.authPage)
+	mux.HandleFunc(pat.Get("/exit"), p.dropCookie)
+	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	// end list of handlers
 	p.instance = mux
 }

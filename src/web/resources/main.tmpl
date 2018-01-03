@@ -1,6 +1,36 @@
 {{define "main.tmpl"}}
 {{ template "header.tmpl"}}
-It's alive!!!
-<button onclick="test()">submit</button>
+<div class="container container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <label class="text-left text-nowrap h4">You disk quota: {{.Quota}} Gb per container </label>
+        </div>
+        <div class="col-sm-2 col-sm-offset-4">
+            <label class="text-nowrap text-right h4">{{.Username}}</label> / <a href="/exit"><span class="glyphicon glyphicon-log-out"></span></a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-responsive table-striped">
+            <thead>
+            <tr>
+                <th class="col-sm-8 text-left">Container</th>
+                <th class="col-sm-1 text-center">Port</th>
+                <th class="col-sm-2 text-center">Data size</th>
+                <th class="col-sm-1 text-center">State</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range $_, $cnt := .Containers }}
+            <tr>
+                <td class="col-sm-8 text-left">{{ $cnt.Name }}</td>
+                <td class="col-sm-1 text-center">{{ $cnt.Port }}</td>
+                <td class="col-sm-2 text-center">{{ $cnt.DiskUsage }} Gb</td>
+                <td class="col-sm-1 text-center">{{ $cnt.State }}</td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
 {{template "footer.tmpl"}}
 {{end}}

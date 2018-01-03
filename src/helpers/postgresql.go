@@ -13,13 +13,14 @@ const (
 	SCHEMA = `
 CREATE TABLE IF NOT EXISTS users
 (
-  id     SERIAL                NOT NULL
+  id     SERIAL                                NOT NULL
     CONSTRAINT users_pkey
     PRIMARY KEY,
-  login  VARCHAR(32)           NOT NULL,
-  email  VARCHAR(64)           NOT NULL,
-  active BOOLEAN DEFAULT TRUE  NOT NULL,
-  admin  BOOLEAN DEFAULT FALSE NOT NULL
+  login  VARCHAR(32)                           NOT NULL,
+  email  VARCHAR(64)                           NOT NULL,
+  active BOOLEAN DEFAULT TRUE                  NOT NULL,
+  admin  BOOLEAN DEFAULT FALSE                 NOT NULL,
+  quota  BIGINT DEFAULT '5368709120' :: BIGINT NOT NULL
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS users_login_uindex
@@ -44,10 +45,29 @@ CREATE TABLE IF NOT EXISTS sessions
     CONSTRAINT sessions_pkey
     PRIMARY KEY
     CONSTRAINT sessions_users__fk
-    REFERENCES users (id)
+    REFERENCES users
     ON UPDATE CASCADE ON DELETE CASCADE,
   expire  TIMESTAMP DEFAULT (now() + '08:00:00' :: INTERVAL) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS container
+(
+  user_id INTEGER          NOT NULL
+    CONSTRAINT data_size_users_id_fk
+    REFERENCES users
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  name    VARCHAR(64)      NOT NULL
+    CONSTRAINT data_size_pkey
+    PRIMARY KEY,
+  size    BIGINT DEFAULT 0 NOT NULL,
+  port    SMALLINT         NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS data_size_container_uindex
+  ON container (name);
+
+CREATE UNIQUE INDEX IF NOT EXISTS container_port_uindex
+  ON container (port);
 `
 )
 

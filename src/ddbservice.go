@@ -32,7 +32,10 @@ func main() {
 		Listen:          appConfig.Listen,
 		ApplicationName: appConfig.Appname,
 		Secret:          appConfig.Secret,
+		Docker:          &appConfig.Docker,
 		LDAPClient:      &ldapClient,
 	}
+	provider.Docker.InitClient()
+	defer provider.Docker.Client.Close()
 	app.StartServer(&provider)
 }

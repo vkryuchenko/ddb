@@ -25,6 +25,8 @@
     }
   },
   "docker": {
+    "data_root":"/ugly/ddb",
+    "quota": 5368709120,
     "target": "tcp://localhost:2376",
     "apiversion": "1.32",
     "registry": "",
