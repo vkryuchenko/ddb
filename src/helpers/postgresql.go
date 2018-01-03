@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users
     CONSTRAINT users_pkey
     PRIMARY KEY,
   login  VARCHAR(32)           NOT NULL,
+  email  VARCHAR(64)           NOT NULL,
   active BOOLEAN DEFAULT TRUE  NOT NULL,
   admin  BOOLEAN DEFAULT FALSE NOT NULL
 );
@@ -36,8 +37,6 @@ CREATE TABLE IF NOT EXISTS history
   command     TEXT                    NOT NULL,
   success     BOOLEAN DEFAULT TRUE    NOT NULL
 );
-
-COMMENT ON TABLE history IS 'user actions history';
 
 CREATE TABLE IF NOT EXISTS sessions
 (

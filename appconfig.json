@@ -2,11 +2,8 @@
   "develop": true,
   "listen": ":8090",
   "log": "",
-  "appname": "dev-db.vrn.mail.msk",
+  "appname": "Dev-DB.VRN",
   "secret": "TgHyEws3CV5jnmGTyFdS31zPkIhg87VVj",
-  "-target": "tcp://192.168.56.101:2376",
-  "target": "tcp://localhost:2376",
-  "apiversion": "1.32",
   "ports": "15500:15999",
   "db": {
     "address": "localhost:15432",
@@ -14,17 +11,36 @@
     "dbname": "ddb"
   },
   "ldap": {
-    "address":"ldap.forumsys.com:389",
-    "base":"dc=example,dc=com",
-    "bind_dn":"cn=read-only-admin,dc=example,dc=com",
-    "bind_password":"password",
-    "user_filter":"(uid=%s)",
-    "group_filter":"",
+    "address": "ldap.forumsys.com:389",
+    "base": "dc=example,dc=com",
+    "bind_dn": "cn=read-only-admin,dc=example,dc=com",
+    "bind_password": "password",
+    "user_filter": "(uid=%s)",
+    "group_filter": "",
     "ssl": {
       "use_ssl": false,
       "skip_tls": true,
       "skip_verify": true,
-      "server_name":"ldap.forumsys.com"
+      "server_name": "ldap.forumsys.com"
     }
-  }
+  },
+  "docker": {
+    "target": "tcp://localhost:2376",
+    "apiversion": "1.32",
+    "registry": "",
+    "images": [
+      "postgres:alpine"
+    ]
+  },
+  "email": {
+    "server": "localhost:25",
+    "from": "Dev-DB.VRN <ddb-notifier@mail.ru>",
+    "username": "ddb-notifier@mail.ru",
+    "password": "",
+    "use_tls": false
+  },
+  "admins": [
+    "v.kryuchenko",
+    "m.rublev"
+  ]
 }

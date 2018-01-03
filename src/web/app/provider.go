@@ -18,6 +18,7 @@ type Provider struct {
 	Secret          string
 	Develop         bool
 	LDAPClient      *helpers.LDAPClient
+	EmailClient     *helpers.EmailClient
 	instance        *goji.Mux
 	templates       *template.Template
 }

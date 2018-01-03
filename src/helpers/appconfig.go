@@ -10,16 +10,17 @@ import (
 )
 
 type AppConfig struct {
-	Develop    bool           `json:"develop"`
-	Listen     string         `json:"listen"`
-	Log        string         `json:"log"`
-	Appname    string         `json:"appname"`
-	Secret     string         `json:"secret"`
-	Target     string         `json:"target"`
-	Apiversion string         `json:"apiversion"`
-	Ports      string         `json:"ports"`
-	DB         PostgresConfig `json:"db"`
-	LDAP       LdapConfig     `json:"ldap"`
+	Develop bool           `json:"develop"`
+	Listen  string         `json:"listen"`
+	Log     string         `json:"log"`
+	Appname string         `json:"appname"`
+	Secret  string         `json:"secret"`
+	Ports   string         `json:"ports"`
+	DB      PostgresConfig `json:"db"`
+	LDAP    LdapConfig     `json:"ldap"`
+	Docker  DockerConfig   `json:"docker"`
+	Email   EmailConfig    `json:"email"`
+	Admins  []string       `json:"admins"`
 }
 
 func (ac *AppConfig) Read(configPath string) {
