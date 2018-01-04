@@ -29,7 +29,6 @@ func (lc *LdapConfig) Init() (LDAPClient, error) {
 		SkipTLS:            lc.SSL.SkipTLS,
 		InsecureSkipVerify: lc.SSL.SkipVerify,
 	}
-	defer client.Close()
 	ldapError = client.Connect()
 
 	return client, ldapError

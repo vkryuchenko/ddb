@@ -7,6 +7,7 @@ import (
 	"flag"
 	"helpers"
 	"log"
+	"strings"
 	"web/app"
 )
 
@@ -30,12 +31,14 @@ func main() {
 	provider := app.Provider{
 		Develop:         appConfig.Develop,
 		Listen:          appConfig.Listen,
-		ApplicationName: appConfig.Appname,
+		ApplicationName: strings.ToLower(appConfig.Appname),
 		Secret:          appConfig.Secret,
 		Docker:          &appConfig.Docker,
+		Database:        &appConfig.DB,
 		LDAPClient:      &ldapClient,
 	}
 	provider.Docker.InitClient()
 	defer provider.Docker.Client.Close()
+
 	app.StartServer(&provider)
 }

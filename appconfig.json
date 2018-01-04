@@ -2,7 +2,7 @@
   "develop": true,
   "listen": ":8090",
   "log": "",
-  "appname": "Dev-DB.VRN",
+  "appname": "DDBService",
   "secret": "TgHyEws3CV5jnmGTyFdS31zPkIhg87VVj",
   "ports": "15500:15999",
   "db": {

@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users
     CONSTRAINT users_pkey
     PRIMARY KEY,
   login  VARCHAR(32)                           NOT NULL,
-  email  VARCHAR(64)                           NOT NULL,
+  email  VARCHAR(64),
   active BOOLEAN DEFAULT TRUE                  NOT NULL,
   admin  BOOLEAN DEFAULT FALSE                 NOT NULL,
   quota  BIGINT DEFAULT '5368709120' :: BIGINT NOT NULL
@@ -78,7 +78,7 @@ type PostgresConfig struct {
 	SSL     string `json:"ssl,omitempty"`
 }
 
-func (pg *PostgresConfig) connect() (*sql.DB, error) {
+func (pg *PostgresConfig) Connect() (*sql.DB, error) {
 	var ssl string
 	if pg.SSL != "" {
 		ssl = pg.SSL
@@ -90,10 +90,11 @@ func (pg *PostgresConfig) connect() (*sql.DB, error) {
 }
 
 func (pg *PostgresConfig) InitDatabase() error {
-	sqlCon, err := pg.connect()
+	sqlCon, err := pg.Connect()
 	if err != nil {
 		return err
 	}
+	defer sqlCon.Close()
 	_, err = sqlCon.Exec(SCHEMA)
 	if err != nil {
 		return err
