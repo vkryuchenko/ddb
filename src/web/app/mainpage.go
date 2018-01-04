@@ -13,6 +13,7 @@ import (
 type DockerContainer struct {
 	ID        string
 	Name      string
+	Image     string
 	Port      uint16
 	State     string
 	DiskUsage uint
@@ -34,8 +35,11 @@ func (uc *UserContainers) filter(containers []types.Container) error {
 			dc := DockerContainer{
 				ID:    cnt.ID,
 				Name:  cnt.Names[0][1:],
-				Port:  cnt.Ports[0].PublicPort,
+				Image: cnt.Image,
 				State: cnt.State,
+			}
+			if len(cnt.Ports) > 0 {
+				dc.Port = cnt.Ports[0].PublicPort
 			}
 			uc.Containers = append(uc.Containers, dc)
 		}

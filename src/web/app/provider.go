@@ -30,8 +30,8 @@ func (p *Provider) init() {
 	//mux.Use(p.cookieMiddleware)
 	// list of handlers
 	mux.HandleFunc(pat.Get("/static/*"), p.staticFile)
-	mux.HandleFunc(pat.Get("/auth"), p.authPage)
-	mux.HandleFunc(pat.Get("/exit"), p.dropCookie)
+	mux.HandleFunc(pat.Get("/login"), p.loginPage)
+	mux.HandleFunc(pat.Get("/logout"), p.dropCookie)
 	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	// end list of handlers
 	p.instance = mux

@@ -7,8 +7,8 @@ import (
 
 func (p *Provider) cookieMiddleware(http.Handler) http.Handler {
 	middleware := func(writer http.ResponseWriter, request *http.Request) {
-		if request.URL.Path == "/auth" {
-			p.authPage(writer, request)
+		if request.URL.Path == "/login" {
+			p.loginPage(writer, request)
 			return
 		}
 		if strings.HasPrefix(request.URL.Path, "/static/") {
@@ -17,7 +17,7 @@ func (p *Provider) cookieMiddleware(http.Handler) http.Handler {
 		}
 		_, err := request.Cookie(p.ApplicationName)
 		if err != nil {
-			http.Redirect(writer, request, "/auth", http.StatusFound)
+			http.Redirect(writer, request, "/login", http.StatusFound)
 			return
 		}
 	}
@@ -25,5 +25,5 @@ func (p *Provider) cookieMiddleware(http.Handler) http.Handler {
 }
 
 func (p *Provider) dropCookie(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }
