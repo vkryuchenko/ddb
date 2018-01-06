@@ -7,6 +7,8 @@ import (
 	"dockerHandlers"
 	"github.com/docker/docker/api/types"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -127,4 +129,53 @@ func (p *Provider) mainPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (p *Provider) actionCreateContainer(w http.ResponseWriter, r *http.Request) {
+	ok := p.sessionValid(w, r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	cookie, err := r.Cookie(p.ApplicationName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	login, err := p.getLoginBySessionId(cookie.Value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	image := r.FormValue("image")
+	containerName := strings.Replace(login, ".", "_", -1) +
+		"_" +
+		strings.Replace(
+			strings.Replace(
+				strings.Replace(
+					image,
+					":",
+					"_",
+					-1,
+				),
+				"/",
+				"_",
+				-1,
+			),
+			".",
+			"_",
+			-1,
+		)
+	containerData := filepath.Join(p.Docker.DataRoot, containerName)
+	err = os.MkdirAll(containerData, 0776)
+	if err != nil && err != os.ErrExist {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = dockerHandlers.CreateAndRun(p.Docker.Client, image, containerName, containerData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusFound)
 }

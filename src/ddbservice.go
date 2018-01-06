@@ -32,7 +32,6 @@ func main() {
 		Develop:         appConfig.Develop,
 		Listen:          appConfig.Listen,
 		ApplicationName: strings.ToLower(appConfig.Appname),
-		Secret:          appConfig.Secret,
 		Docker:          &appConfig.Docker,
 		Database:        &appConfig.DB,
 		LDAPClient:      &ldapClient,

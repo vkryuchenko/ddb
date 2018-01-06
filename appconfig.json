@@ -1,10 +1,9 @@
 {
-  "develop": true,
+  "develop": false,
   "listen": ":8090",
   "log": "",
-  "appname": "DDBService",
+  "appname": "Dev-DB.VRN",
   "secret": "TgHyEws3CV5jnmGTyFdS31zPkIhg87VVj",
-  "ports": "15500:15999",
   "db": {
     "address": "localhost:15432",
     "auth": "postgres",

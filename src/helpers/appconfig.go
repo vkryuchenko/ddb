@@ -14,8 +14,6 @@ type AppConfig struct {
 	Listen  string         `json:"listen"`
 	Log     string         `json:"log"`
 	Appname string         `json:"appname"`
-	Secret  string         `json:"secret"`
-	Ports   string         `json:"ports"`
 	DB      PostgresConfig `json:"db"`
 	LDAP    LdapConfig     `json:"ldap"`
 	Docker  DockerConfig   `json:"docker"`

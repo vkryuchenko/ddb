@@ -15,7 +15,6 @@ import (
 type Provider struct {
 	Listen          string
 	ApplicationName string
-	Secret          string
 	Develop         bool
 	Database        *helpers.PostgresConfig
 	Docker          *helpers.DockerConfig
@@ -33,6 +32,7 @@ func (p *Provider) init() {
 	mux.HandleFunc(pat.Get("/logout"), p.sessionDrop)
 	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	mux.HandleFunc(pat.Post("/auth"), p.actionAuth)
+	mux.HandleFunc(pat.Post("/create"), p.actionCreateContainer)
 	// end list of handlers
 	p.instance = mux
 }
