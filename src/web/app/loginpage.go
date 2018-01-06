@@ -14,5 +14,3 @@ func (p *Provider) loginPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-func (p *Provider) checkLogin(w http.ResponseWriter, r *http.Request) {}
