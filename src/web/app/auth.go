@@ -57,15 +57,10 @@ func (p *Provider) createUser(name, email string) (UserInfo, error) {
 	if err != nil {
 		return ui, err
 	}
-	result, err := query.Exec(name, email, p.Docker.Quota)
+	err = query.QueryRow(name, email, p.Docker.Quota).Scan(&ui.Id)
 	if err != nil {
 		return ui, err
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return ui, err
-	}
-	ui.Id = uint(id)
 	ui.Login = name
 	ui.Email = email
 	ui.Active = true
@@ -129,7 +124,7 @@ func (p *Provider) actionAuth(w http.ResponseWriter, r *http.Request) {
 	session := sessionInfo{
 		UserId: user.Id,
 	}
-	err = p.updateSession(w, session)
+	err = p.sessionUpdate(w, session)
 	if err != nil {
 		log.Print(err)
 		http.Redirect(w, r, "/login", http.StatusFound)

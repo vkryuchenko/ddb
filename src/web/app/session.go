@@ -5,7 +5,6 @@ import (
 	"helpers"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -42,7 +41,7 @@ type sessionInfo struct {
 	UUID   string
 }
 
-func (p *Provider) getSessionByUUID(uuid string) (sessionInfo, error) {
+func (p *Provider) sessionGetByUUID(uuid string) (sessionInfo, error) {
 	var session sessionInfo
 
 	db, err := p.Database.Connect()
@@ -63,46 +62,20 @@ func (p *Provider) getSessionByUUID(uuid string) (sessionInfo, error) {
 	return session, nil
 }
 
-func (p *Provider) sessionMiddleware(http.Handler) http.Handler {
-	middleware := func(w http.ResponseWriter, r *http.Request) {
-		switch true {
-		case r.URL.Path == "/login":
-			p.loginPage(w, r)
-			return
-		case r.URL.Path == "/logout":
-			p.dropSession(w, r)
-			return
-		case r.URL.Path == "/auth":
-			p.actionAuth(w, r)
-			return
-		case strings.HasPrefix(r.URL.Path, "/static/"):
-			p.staticFile(w, r)
-			return
-		default:
-		}
-		cookie, err := r.Cookie(p.ApplicationName)
-		if err != nil {
-			http.Redirect(w, r, "/login", http.StatusFound)
-			return
-		}
-		_, err = p.checkSession(cookie)
-		if err != nil {
-			log.Print(err)
-			p.dropSession(w, r)
-			return
-		}
-		//err = p.updateSession(w, session)
-		//if err != nil {
-		//	log.Print(err)
-		//	p.dropSession(w, r)
-		//	return
-		//}
-		p.mainPage(w, r)
+func (p *Provider) sessionValid(w http.ResponseWriter, r *http.Request) bool {
+	cookie, err := r.Cookie(p.ApplicationName)
+	if err != nil {
+		return false
 	}
-	return http.HandlerFunc(middleware)
+	_, err = p.sessionCheck(cookie)
+	if err != nil {
+		p.sessionDrop(w, r)
+		return false
+	}
+	return true
 }
 
-func (p *Provider) updateSession(w http.ResponseWriter, s sessionInfo) error {
+func (p *Provider) sessionUpdate(w http.ResponseWriter, s sessionInfo) error {
 	uuid, err := helpers.NewUUID()
 	if err != nil {
 		return err
@@ -146,8 +119,8 @@ func (p *Provider) updateSession(w http.ResponseWriter, s sessionInfo) error {
 	return nil
 }
 
-func (p *Provider) checkSession(cookie *http.Cookie) (sessionInfo, error) {
-	session, err := p.getSessionByUUID(cookie.Value)
+func (p *Provider) sessionCheck(cookie *http.Cookie) (sessionInfo, error) {
+	session, err := p.sessionGetByUUID(cookie.Value)
 	if err != nil {
 		return session, err
 	}
@@ -157,7 +130,7 @@ func (p *Provider) checkSession(cookie *http.Cookie) (sessionInfo, error) {
 	return session, nil
 }
 
-func (p *Provider) dropSession(w http.ResponseWriter, r *http.Request) {
+func (p *Provider) sessionDrop(w http.ResponseWriter, r *http.Request) {
 	defer http.Redirect(w, r, "/login", http.StatusFound)
 	cookie, err := r.Cookie(p.ApplicationName)
 	if err != nil {

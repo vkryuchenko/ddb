@@ -82,6 +82,11 @@ func (uc *UserContainers) collectInfo(p *Provider) error {
 }
 
 func (p *Provider) mainPage(w http.ResponseWriter, r *http.Request) {
+	ok := p.sessionValid(w, r)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
 	cookie, err := r.Cookie(p.ApplicationName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -27,12 +27,10 @@ type Provider struct {
 
 func (p *Provider) init() {
 	mux := goji.NewMux()
-	// cookie middleware
-	mux.Use(p.sessionMiddleware)
 	// list of handlers
 	mux.HandleFunc(pat.Get("/static/*"), p.staticFile)
 	mux.HandleFunc(pat.Get("/login"), p.loginPage)
-	mux.HandleFunc(pat.Get("/logout"), p.dropSession)
+	mux.HandleFunc(pat.Get("/logout"), p.sessionDrop)
 	mux.HandleFunc(pat.Get("/"), p.mainPage)
 	mux.HandleFunc(pat.Post("/auth"), p.actionAuth)
 	// end list of handlers
