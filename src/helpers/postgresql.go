@@ -41,14 +41,18 @@ CREATE TABLE IF NOT EXISTS history
 
 CREATE TABLE IF NOT EXISTS sessions
 (
-  user_id INTEGER                                            NOT NULL
-    CONSTRAINT sessions_pkey
+  user_id    INTEGER                                            NOT NULL
+    CONSTRAINT sessions_user_id_pk
     PRIMARY KEY
     CONSTRAINT sessions_users__fk
     REFERENCES users
     ON UPDATE CASCADE ON DELETE CASCADE,
-  expire  TIMESTAMP DEFAULT (now() + '08:00:00' :: INTERVAL) NOT NULL
+  expire     TIMESTAMP DEFAULT (now() + '08:00:00' :: INTERVAL) NOT NULL,
+  session_id UUID                                               NOT NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS sessions_user_id_uindex
+  ON sessions (user_id);
 
 CREATE TABLE IF NOT EXISTS container
 (
