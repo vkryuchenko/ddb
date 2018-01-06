@@ -11,7 +11,6 @@ type DockerConfig struct {
 	Quota      uint     `json:"quota"`
 	Target     string   `json:"target"`
 	Apiversion string   `json:"apiversion"`
-	Registry   string   `json:"registry"`
 	Images     []string `json:"images"`
 	Client     *client.Client
 }

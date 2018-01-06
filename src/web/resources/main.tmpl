@@ -6,7 +6,8 @@
             <label class="text-left text-nowrap h4">You disk quota: {{.Quota}} Gb per container </label>
         </div>
         <div class="col-sm-2 col-sm-offset-4">
-            <label class="text-nowrap text-right h4">{{.Username}}</label> / <a href="/logout"><span class="glyphicon glyphicon-log-out"></span></a>
+            <label class="text-nowrap text-right h4">{{.Username}}</label> / <a href="/logout"><span
+                class="glyphicon glyphicon-log-out"></span></a>
         </div>
     </div>
     <div class="row">
@@ -32,6 +33,25 @@
             {{ end }}
             </tbody>
         </table>
+    </div>
+    <div class="row">
+        <form class="form-inline col-sm-6" action="/create" method="post">
+            <div class="form-group">
+                <label for="image">Image</label>
+            </div>
+        {{ if not .AvailableImages}}
+            <select class="form-group"></select>
+            <button class="btn btn-danger" disabled>Unable to create</button>
+        {{ else }}
+            <select class="form-group" name="image">
+            {{ range $key, $value := .AvailableImages}}
+                <option value="{{$key}}">{{$value}}</option>
+            {{ end }}
+            </select>
+            <button class="btn btn-success">Create</button>
+        {{ end }}
+
+        </form>
     </div>
 </div>
 {{template "footer.tmpl"}}

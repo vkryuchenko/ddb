@@ -29,9 +29,10 @@ type DockerContainer struct {
 }
 
 type UserContainers struct {
-	Username   string
-	Quota      uint
-	Containers []DockerContainer
+	Username        string
+	Quota           uint
+	AvailableImages map[string]string
+	Containers      []DockerContainer
 }
 
 func (p *Provider) getLoginBySessionId(uuid string) (string, error) {
@@ -51,7 +52,7 @@ func (p *Provider) getLoginBySessionId(uuid string) (string, error) {
 	return login, nil
 }
 
-func (uc *UserContainers) filter(containers []types.Container) error {
+func (uc *UserContainers) filter(containers []types.Container, images []string) error {
 	if len(containers) < 1 {
 		return nil
 	}
@@ -70,6 +71,21 @@ func (uc *UserContainers) filter(containers []types.Container) error {
 			uc.Containers = append(uc.Containers, dc)
 		}
 	}
+	uc.AvailableImages = make(map[string]string)
+	if len(uc.Containers) < 1 || len(images) == 0 {
+		for _, image := range images {
+			uc.AvailableImages[image] = image
+		}
+	} else {
+		for _, cnt := range uc.Containers {
+			for _, image := range images {
+				if image == cnt.Image {
+					continue
+				}
+				uc.AvailableImages[image] = image
+			}
+		}
+	}
 	return nil
 }
 
@@ -78,7 +94,7 @@ func (uc *UserContainers) collectInfo(p *Provider) error {
 	if err != nil {
 		return err
 	}
-	return uc.filter(containersList)
+	return uc.filter(containersList, p.Docker.Images)
 }
 
 func (p *Provider) mainPage(w http.ResponseWriter, r *http.Request) {
