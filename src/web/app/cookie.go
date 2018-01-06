@@ -42,7 +42,7 @@ type sessionInfo struct {
 	UUID   string
 }
 
-func getSessionByUUID(p *Provider, uuid string) (sessionInfo, error) {
+func (p *Provider) getSessionByUUID(uuid string) (sessionInfo, error) {
 	var session sessionInfo
 
 	db, err := p.Database.Connect()
@@ -85,18 +85,18 @@ func (p *Provider) sessionMiddleware(http.Handler) http.Handler {
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
-		session, err := p.checkSession(cookie)
+		_, err = p.checkSession(cookie)
 		if err != nil {
 			log.Print(err)
 			p.dropSession(w, r)
 			return
 		}
-		err = p.updateSession(w, session)
-		if err != nil {
-			log.Print(err)
-			p.dropSession(w, r)
-			return
-		}
+		//err = p.updateSession(w, session)
+		//if err != nil {
+		//	log.Print(err)
+		//	p.dropSession(w, r)
+		//	return
+		//}
 		p.mainPage(w, r)
 	}
 	return http.HandlerFunc(middleware)
@@ -147,7 +147,7 @@ func (p *Provider) updateSession(w http.ResponseWriter, s sessionInfo) error {
 }
 
 func (p *Provider) checkSession(cookie *http.Cookie) (sessionInfo, error) {
-	session, err := getSessionByUUID(p, cookie.Value)
+	session, err := p.getSessionByUUID(cookie.Value)
 	if err != nil {
 		return session, err
 	}

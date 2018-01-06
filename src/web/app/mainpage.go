@@ -10,6 +10,15 @@ import (
 	"strings"
 )
 
+const (
+	queryGetLoginBySessionId = `
+SELECT login
+FROM public.users
+  JOIN public.sessions ON users.id = sessions.user_id
+WHERE session_id = $1;
+`
+)
+
 type DockerContainer struct {
 	ID        string
 	Name      string
@@ -23,6 +32,23 @@ type UserContainers struct {
 	Username   string
 	Quota      uint
 	Containers []DockerContainer
+}
+
+func (p *Provider) getLoginBySessionId(uuid string) (string, error) {
+	login := ""
+	db, err := p.Database.Connect()
+	if err != nil {
+		return login, err
+	}
+	query, err := db.Prepare(queryGetLoginBySessionId)
+	if err != nil {
+		return login, err
+	}
+	err = query.QueryRow(uuid).Scan(&login)
+	if err != nil {
+		return login, err
+	}
+	return login, nil
 }
 
 func (uc *UserContainers) filter(containers []types.Container) error {
@@ -55,19 +81,29 @@ func (uc *UserContainers) collectInfo(p *Provider) error {
 	return uc.filter(containersList)
 }
 
-func (p *Provider) mainPage(writer http.ResponseWriter, request *http.Request) {
-	data := UserContainers{
-		Username: "newton",
-		Quota:    p.Docker.Quota / (1 << 30),
-	}
-	err := data.collectInfo(p)
+func (p *Provider) mainPage(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie(p.ApplicationName)
 	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = p.execTemplate(writer, "main.tmpl", data)
+	login, err := p.getLoginBySessionId(cookie.Value)
 	if err != nil {
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data := UserContainers{
+		Username: login,
+		Quota:    p.Docker.Quota / (1 << 30),
+	}
+	err = data.collectInfo(p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = p.execTemplate(w, "main.tmpl", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
