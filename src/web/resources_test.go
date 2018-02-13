@@ -19,10 +19,13 @@ func TestAssetNames(t *testing.T) {
 	sources := []string{
 		"header.tmpl",
 		"footer.tmpl",
-		"auth.tmpl",
+		"login.tmpl",
 		"main.tmpl",
 		"static/css/bootstrap.min.css",
 		"static/css/bootstrap-theme.min.css",
+		"static/fonts/glyphicons-halflings-regular.svg",
+		"static/fonts/glyphicons-halflings-regular.woff",
+		"static/fonts/glyphicons-halflings-regular.woff2",
 		"static/functions.js",
 	}
 	names := AssetNames()
